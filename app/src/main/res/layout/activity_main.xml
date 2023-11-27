@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:backgroundTint="#000000"
-            android:text="Log In"
+            android:text="  CONNECTEZ-VOUS"
             android:textAllCaps="true" />
         <Space
             android:layout_width="0dp"
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:backgroundTint="#6AC501"
-            android:text="Register"
+            android:text="INSCRIVEZ-VOUS"
             android:textAllCaps="true" />
 
     </LinearLayout>

@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity {
 
     /*** DECLARATION DES VARIABLES ****/
@@ -30,19 +32,19 @@ public class MainActivity extends AppCompatActivity {
         register = findViewById(R.id.register);
         login = findViewById(R.id.login);
 
-        /*** ANIMATION DU LINEAR LAYOUT  ****/
+        /*** Animation du Linear Layout  ****/
 
         linearLayout.animate().alpha(0f).setDuration(1);
 
         // Actions à effectuer lors du clic sur logoImage
         TranslateAnimation animation = new TranslateAnimation(0,0,0,-1000);
-        animation.setDuration(1000);
+        animation.setDuration(2000);
         animation.setFillAfter(false);
         animation.setAnimationListener(new MyAnimationListener());
 
         logoImage.setAnimation(animation);
 
-        // Configuration du listener pour gérer les clics sur le bouton 'register'.
+        /** Définit un écouteur de clic pour le bouton 'INSCRIVEZ-VOUS **/
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Configuration du listener pour gérer les clics sur le bouton 'login'.
-        register.setOnClickListener(new View.OnClickListener() {
+        /** Définit un écouteur de clic pour le bouton 'CONNECTEZ-VOUS' **/
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this , LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
@@ -77,6 +79,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onAnimationRepeat(Animation animation) {
 
+        }
+    }
+
+    //Vérification du statut de l'utilisation puis redirection vers la HomeActivity
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null){
+            startActivity(new Intent(MainActivity.this, HomeActivity.class));
+            finish();
         }
     }
 }
