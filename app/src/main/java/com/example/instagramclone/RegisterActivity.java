@@ -113,7 +113,9 @@ public class RegisterActivity extends AppCompatActivity {
                 map.put("Pseudo", pseudo);
                 map.put("Nom", name);
                 map.put("Prenom", firstname);
-                map.put("E-mail", email);
+                map.put("email", email);
+                map.put("bio","");
+                map.put("imageurl", "default");
 
                 // Enregistrement des données de l'utilisateur dans la base de données Firebase sous le nœud "Users"
                 mRootDef.child("Users").child(mAuth.getCurrentUser().getUid()).setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {

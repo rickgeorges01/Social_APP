@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Actions à effectuer lors du clic sur logoImage
         TranslateAnimation animation = new TranslateAnimation(0,0,0,-1000);
-        animation.setDuration(2000);
+        animation.setDuration(3000);
         animation.setFillAfter(false);
         animation.setAnimationListener(new MyAnimationListener());
 
