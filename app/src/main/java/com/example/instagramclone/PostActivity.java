@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,11 +21,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.hendraanggrian.appcompat.socialview.autocomplete.Hashtag;
+import com.hendraanggrian.appcompat.socialview.widget.HashtagArrayAdapter;
 import com.hendraanggrian.appcompat.socialview.widget.SocialAutoCompleteTextView;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -161,5 +167,25 @@ public class PostActivity extends AppCompatActivity {
             startActivity(new Intent(PostActivity.this, HomeActivity.class));
             finish();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ArrayAdapter <Hashtag> hashtagAdapter = new HashtagArrayAdapter<>(getApplicationContext());
+        FirebaseDatabase.getInstance().getReference().child("HashTags").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapchot : dataSnapshot.getChildren()){
+                    hashtagAdapter.add(new Hashtag(snapchot.getKey(), (int) snapchot.getChildrenCount()));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        description.setHashtagAdapter(hashtagAdapter);
     }
 }

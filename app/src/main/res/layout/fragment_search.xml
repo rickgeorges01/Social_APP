@@ -26,21 +26,33 @@
               android:id="@+id/search_bar"
               android:background="@android:color/transparent"
               android:hint="Retrouvez vos amis..."
-              android:layout_marginStart="20dp"/>
+              android:layout_marginStart="24dp"/>
       </androidx.appcompat.widget.Toolbar>
   </com.google.android.material.appbar.AppBarLayout>
+    
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bar">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            /**Affichage des Users Account et des tags**/
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recycler_view_users"
+                android:layout_below="@+id/bar"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recycler_view_tags"
+                android:layout_below="@+id/recycler_view_users"
+                android:layout_marginTop="5dp"/>
 
-    /**Affichage des Users Account et des tags**/
-<androidx.recyclerview.widget.RecyclerView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/recycler_view_users"
-    android:layout_below="@+id/bar"/>
-<androidx.recyclerview.widget.RecyclerView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/recycler_view_tags"
-    android:layout_below="@+id/recycler_view_users"
-    android:layout_marginTop="5dp"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
 
 </RelativeLayout>

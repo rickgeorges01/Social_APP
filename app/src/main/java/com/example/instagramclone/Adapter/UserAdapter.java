@@ -1,6 +1,7 @@
 package com.example.instagramclone.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,55 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         if(user.getId().equals(firebaseUser.getUid())) {
             holder.btnFollow.setVisibility(View.GONE);
         }
+        holder.btnFollow.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String currentStatus = holder.btnFollow.getText().toString();
+                Log.d("FollowDebug", "Button clicked. Current status: " + currentStatus);
 
+                if(currentStatus.equals("FOLLOW")) {
+                    // Mise à jour immédiate du texte du bouton
+                    holder.btnFollow.setText("FOLLOWING");
+                    Log.d("FollowDebug", "Changed button text to FOLLOWING.");
+
+                    // Ajout de l'utilisateur à la liste de suivi
+                    FirebaseDatabase.getInstance().getReference().child("Follow")
+                            .child(firebaseUser.getUid()).child("following").child(user.getId())
+                            .setValue(true)
+                            // Autres méthodes on success et on failure
+                            .addOnSuccessListener(aVoid -> Log.d("Follow", "Successfully followed: " + user.getId()))
+                            .addOnFailureListener(e -> Log.e("Follow", "Failed to follow: " + user.getId(), e));
+
+                    // Ajout de l'utilisateur actuel aux followers de l'utilisateur cible
+                    FirebaseDatabase.getInstance().getReference().child("Follow")
+                            .child(user.getId()).child("followers").child(firebaseUser.getUid())
+                            .setValue(true)
+                            // Autres méthodes on success et on failure
+                            .addOnSuccessListener(aVoid -> Log.d("Follow", "Added to followers: " + firebaseUser.getUid()))
+                            .addOnFailureListener(e -> Log.e("Follow", "Failed to add to followers: " + firebaseUser.getUid(), e));
+
+                } else {
+                    // Mise à jour immédiate du texte du bouton
+                    holder.btnFollow.setText("FOLLOW");
+                    Log.d("FollowDebug", "Changed button text to FOLLOW.");
+
+                    // Retrait de l'utilisateur de la liste de suivi
+                    FirebaseDatabase.getInstance().getReference().child("Follow")
+                            .child(firebaseUser.getUid()).child("following").child(user.getId())
+                            .removeValue()
+                            // Autres méthodes on success et on failure
+                            .addOnSuccessListener(aVoid -> Log.d("Follow", "Successfully unfollowed: " + user.getId()))
+                            .addOnFailureListener(e -> Log.e("Follow", "Failed to unfollow: " + user.getId(), e));
+
+                    // Retrait de l'utilisateur actuel des followers de l'utilisateur cible
+                    FirebaseDatabase.getInstance().getReference().child("Follow")
+                            .child(user.getId()).child("followers").child(firebaseUser.getUid())
+                            .removeValue()
+                            // Autres méthodes on success et on failure
+                            .addOnSuccessListener(aVoid -> Log.d("Follow", "Removed from followers: " + firebaseUser.getUid()))
+                            .addOnFailureListener(e -> Log.e("Follow", "Failed to remove from followers: " + firebaseUser.getUid(), e));
+                }
+            }
+        });
     }
 
     private void isFollowed(final String id, final Button btnFollow) {
@@ -70,15 +119,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.child(id).exists())
-                    btnFollow.setText("abonné");
-                else
-                    btnFollow.setText("suivre");
+                if (snapshot.child(id).exists()){
+                    btnFollow.setText("FOLLOWING");
+                    Log.d("FollowDebug", "User " + id + " is followed. Button text set to FOLLOWING.");
+                } else {
+                    btnFollow.setText("FOLLOW");
+                    Log.d("FollowDebug", "User " + id + " is not followed. Button text set to FOLLOW.");
+                }
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.e("FollowDebug", "Firebase error: " + error.getMessage());
             }
         });
     }
